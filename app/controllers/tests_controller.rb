@@ -4,7 +4,6 @@ class TestsController < ApplicationController
   # GET /tests
   def index
     @tests = Test.all
-
     render json: @tests
   end
 
@@ -15,12 +14,15 @@ class TestsController < ApplicationController
 
   # POST /tests
   def create
-    @test = Test.new(test_params)
-
-    if @test.save
-      render json: @test, status: :created, location: @test
-    else
-      render json: @test.errors, status: :unprocessable_entity
+    begin
+      @test = Test.new(test_params)
+      if @test.save
+        render json: @test, status: :created, location: @test
+      else
+        render json: { error: @test.errors.full_messages}, status: :unprocessable_entity
+      end
+    rescue => e
+      render json: { error: e.message}, status: :unprocessable_entity
     end
   end
 
