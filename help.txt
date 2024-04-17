@@ -1,0 +1,8 @@
+resources :model, only:[:index, :show, :update, :cancel] do
+	collection do without unique id
+		get 'function'
+	end
+	member do with unique id
+		get 'function' 
+	end
+end
