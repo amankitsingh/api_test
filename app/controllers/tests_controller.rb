@@ -42,13 +42,20 @@ class TestsController < ApplicationController
 
   # DELETE /tests/1
   def destroy
-    @test.destroy
+    if @test.destroy
+      render json: @test
+    else
+      render json: @test.errors, status: :unprocessable_entity
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_test
-      @test = Test.find(params[:id])
+      @test = Test.where(id: params[:id]).last
+      unless @test.present?
+        render json: {error:"Record not found"}, status: :not_found
+      end
     end
 
     # Only allow a list of trusted parameters through.
