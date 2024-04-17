@@ -3,8 +3,13 @@ class TestsController < ApplicationController
 
   # GET /tests
   def index
-    @tests = Test.all
-    render json: @tests
+    @tests = Test.all.page(params[:page]||1).per(params[:per_page]||1)
+    pagination_info = {
+      current_page: @tests.current_page,
+      total_pages: @tests.total_pages,
+      total_count: @tests.total_count
+    }
+    render json: { test: @tests, pagination: pagination_info }, status: :ok
   end
 
   # GET /tests/1
